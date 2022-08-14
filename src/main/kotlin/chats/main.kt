@@ -48,13 +48,7 @@ class ChatService {
     //Получить информацию о количестве непрочитанных чатов - например для уведомления
     fun getUnreadChatsCount(): Int {
         var count = 0
- //       chats.forEach { getUnreadChatsCount()}
-        for ((key) in chats) {
-            val unreads = getUnreadMessagesCount(key)
-            if (unreads > 0) {
-                count++
-            }
-        }
+       chats.filter { getUnreadMessagesCount(it.key)>0 }.forEach{ _ -> count ++}
         return count
     }
 
@@ -70,8 +64,6 @@ class ChatService {
         // присвоили значение прочитанно c помощью onEach
     }
 
-    // message.any{it.unread} - проверить есть ли хотя бы одно непрочитанное соо
-    // message.find{it.unread} - найти первое непрочитанное соо
 }
 
 fun main() {
