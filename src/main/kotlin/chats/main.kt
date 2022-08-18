@@ -43,22 +43,25 @@ class ChatService {
 
     fun getUnreadChatsCount(): Int {
         var count = 0
-        chats.filter { getUnreadMessagesCount(it.key) > 0 }.forEach { _ -> count++ }
+        chats.asSequence().filter { getUnreadMessagesCount(it.key) > 0 }.forEach { _ -> count++ }
         return count
     }
 
     fun getUnreadMessagesCount(userId: Int): Int {
         val chat = chats[userId] ?: throw NoChatException()
-        return chat.messages.filter { it.unread == true }.count()
+        return chat.messages.count { it.unread }
     }
 
     fun getLastMessages(userId: Int): List<Message>? {
         val chat = chats[userId] ?: throw NoChatException()
-        return chat.messages.filter { true }.takeLast(10).onEach { it.unread = false }
+        return chat.messages.asSequence().filter { true }.take(10).onEach { it.unread = false }.toList()
     }
 
 }
 
 fun main() {
+    val service = ChatService()
+    service.addMessage(1, Message("msg"))
+    println(service.getLastMessages(1))
 
 }
